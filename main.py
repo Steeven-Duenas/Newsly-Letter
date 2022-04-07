@@ -109,7 +109,4 @@ if country != "Select a country":
     st.title(country + " *News!*")
     get_Country_News(countrycode, country)
 
-if country:
-    st.write(country)
-    st.write("Test new")
-    st.write("Retesting")
+
