@@ -61,34 +61,39 @@ class topheadlines:
     world_news = ""
     total_results = 0
     show_article_number = 0
+    selected_country = ""
 
-    def __init__(self, language, q):
-        language = language
-        q = q
+    def set_country(self, country):
+        self.selected_country = country
 
-    def get_world_api_request(self, selected_country):
-        url = "https://newsapi.org/v2/top-headlines?country={0}&apiKey={1}".format(selected_country, self.API_KEY)
+    def get_world_api_request(self):
+        url = "https://newsapi.org/v2/top-headlines?country={0}&apiKey={1}".format(self.selected_country, self.API_KEY)
         world_news_request = requests.get(url).json()
-        self.world_news = world_news_request
+        return world_news_request
 
     def set_total_results(self, world_news):
         total = world_news["totalResults"]
         self.total_results = total
 
-    def get_articles_world(self, world_news):
-        news = world_news
+    def get_articles_world(self):
+        news = self.get_world_api_request()
         articles = news["articles"]
         my_articles = []
         for article in articles:
             my_articles.append(article["title"])
         return my_articles
 
-    def sef_article_number(self, article_number):
+    def set_article_number(self, article_number):
         self.show_article_number = article_number
 
-    def show_article(self, get_articles_world):
-        my_articles = get_articles_world()
-        my_news = " "
-        for i in range(self.show_article_number):
+    def show_article(self):
+        my_articles = self.get_articles_world()
+        my_news = ""
+        for i in range(1):
             my_news = my_news + str(i + 1) + ". " + my_articles[i] + "\n"
         return my_news
+
+    def get_country_code(self, selected_country):
+        country_code = 'blank'
+        country_code = self.countries_of_the_world[selected_country]
+        return country_code

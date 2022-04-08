@@ -42,8 +42,8 @@ class everything:
     def sef_article_number(self, article_number):
         self.show_article_number = article_number
 
-    def show_article(self, get_articles_everything):
-        my_articles = get_articles_everything()
+    def show_article(self):
+        my_articles = self.get_articles_everything()
         my_news = " "
         for i in range(self.show_article_number):
             my_news = my_news + str(i + 1) + ". " + my_articles[i] + "\n"
