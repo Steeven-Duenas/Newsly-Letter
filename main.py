@@ -1,33 +1,92 @@
 import streamlit as st
+import pandas as pd
+import requests
+
 from topheadlines import topheadlines
 
-top_head_lines_1 = topheadlines()
+countries_of_the_world = {'Select a country': 'none',
+                          'Argentina': 'ar',
+                          'Australia': 'au',
+                          'Austria': 'at',
+                          'Belgium': 'be',
+                          'Brazil': 'br',
+                          'Bulgaria': 'bg',
+                          'Canada': 'ca',
+                          'China': 'cn',
+                          'Colombia': 'co',
+                          'Cuba': 'cu',
+                          'Czech Republic': 'cz',
+                          'Egypt': 'eg',
+                          'France': 'fr',
+                          'Germany': 'de',
+                          'Greece': 'gr',
+                          'Hong Kong': 'hk',
+                          'Hungary': 'hu',
+                          'India': 'in',
+                          'Indonesia': 'id',
+                          'Ireland': 'ie',
+                          'Israel': 'il',
+                          'Italy': 'it',
+                          'Japan': 'jp',
+                          'Korea, Republic of': 'kr',
+                          'Latvia': 'lv',
+                          'Lithuania': 'lt',
+                          'Malaysia': 'my',
+                          'Mexico': 'mx',
+                          'Morocco': 'ma',
+                          'Netherlands': 'nl',
+                          'New Zealand': 'nz',
+                          'Nigeria': 'ng',
+                          'Norway': 'no',
+                          'Philippines': 'ph',
+                          'Poland': 'pl',
+                          'Portugal': 'pt',
+                          'Romania': 'ro',
+                          'Russian Federation': 'ru',
+                          'Saudi Arabia': 'sa',
+                          'Serbia': 'rs',
+                          'Singapore': 'sg',
+                          'Slovakia': 'sk',
+                          'Slovenia': 'si',
+                          'South Africa': 'za',
+                          'Sweden': 'se',
+                          'Switzerland': 'ch',
+                          'Taiwan, Province of China': 'tw',
+                          'Thailand': 'th',
+                          'Turkey': 'tr',
+                          'Ukraine': 'ua',
+                          'United Arab Emirates': 'ae',
+                          'United Kingdom': 'gb',
+                          'United States': 'us',
+                          'Venezuela, Bolivarian Republic of': 've'}
 
-# bring the menu
-st.title("This is our News App")
+
+# API KEY =  f9e5f0c7d52342c1a1aa5129684953c3
+
+def request_country_news_api(country_select):
+    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
+    url = "https://newsapi.org/v2/top-headlines?country={0}&category=business&apiKey={1}".format(country_select,
+                                                                                                 api_key)
+    news = requests.get(url).json()
+
+    articles = news["articles"]
+    my_articles = []
+
+    for article in articles:
+        my_articles.append(article["title"])
+
+    return my_articles
 
 
-def initiate_sidebar_radio_button_options():
-    with st.sidebar:
-        add_radio = st.radio(
-            "Filter News by: ",
-            ("Top World Headlines", "Sources", "Any News")
-        )
-    return add_radio
+country = st.selectbox(
+    'Select the country which you want news', options=countries_of_the_world)
+
+country_code = countries_of_the_world[country]
+
+articles = request_country_news_api(country_code)
+
+top_headlines_1 = topheadlines(articles)
 
 
-option = initiate_sidebar_radio_button_options()
-if option == "Top World Headlines":
-    country_selected = st.selectbox("Select a country", options=top_head_lines_1.countries_of_the_world)
-    top_head_lines_1.set_country(country_selected)
-    top_head_lines_1.get_world_api_request()
-    st.write(top_head_lines_1.get_articles_world())
-    #if country_selected:
-        #st.write("You have selected: " + country_selected)
-        #articles = top_head_lines_1.show_article()
-        #st.write(articles)
 
-elif option == "Sources":
-    st.write("This is sources still a work in progress")
-elif option == "Any News":
-    st.write("This is any news, but it is still a work in progress")
+
