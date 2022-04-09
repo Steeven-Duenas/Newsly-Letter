@@ -61,31 +61,26 @@ countries_of_the_world = {'Select a country': 'none',
                           'Venezuela, Bolivarian Republic of': 've'}
 
 
-# API KEY =  f9e5f0c7d52342c1a1aa5129684953c3
-
 def request_country_news_api(country_select):
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     url = "https://newsapi.org/v2/top-headlines?country={0}&category=business&apiKey={1}".format(country_select,
                                                                                                  api_key)
     news = requests.get(url).json()
 
-    articles = news["articles"]
-    my_articles = []
-
-    for article in articles:
-        my_articles.append(article["title"])
-
-    return my_articles
+    return news
 
 
 country = st.selectbox(
     'Select the country which you want news', options=countries_of_the_world)
 
-country_code = countries_of_the_world[country]
+if country:
+    st.write("You have selected: " + country)
+    country_code = countries_of_the_world[country]
+    news = request_country_news_api(country_code)
+    top_headlines_1 = topheadlines(news)
 
-articles = request_country_news_api(country_code)
-
-top_headlines_1 = topheadlines(articles)
+    headlines = topheadlines().show_article()
+    st.write()
 
 
 

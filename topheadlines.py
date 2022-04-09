@@ -3,19 +3,15 @@ import requests
 
 class topheadlines:
 
-    def __init__(self, articleList):
-        self.articlesList = articleList
+    def __init__(self, newsJson):
+        self.newsJson = newsJson
 
-    def set_country(self, country):
-        self.selected_country = country
-
-    def set_total_results(self, world_news):
-        total = world_news["totalResults"]
-        self.total_results = total
+    def get_total_results(self):
+        total = self.newsJson["totalResults"]
+        return total
 
     def get_articles_world(self):
-        news = self.get_world_api_request()
-        articles = news["articles"]
+        articles = self.newsJson["articles"]
         my_articles = []
         for article in articles:
             my_articles.append(article["title"])
@@ -27,7 +23,8 @@ class topheadlines:
     def show_article(self):
         my_articles = self.get_articles_world()
         my_news = ""
-        for i in range(1):
+        display = self.get_total_results()
+        for i in range(display):
             my_news = my_news + str(i + 1) + ". " + my_articles[i] + "\n"
         return my_news
 
