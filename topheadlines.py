@@ -1,6 +1,3 @@
-import requests
-
-
 class topheadlines:
 
     def __init__(self, newsJson):
@@ -17,14 +14,10 @@ class topheadlines:
             my_articles.append(article["title"])
         return my_articles
 
-    def set_article_number(self, article_number):
-        self.show_article_number = article_number
-
-    def show_article(self):
+    def show_article(self, headline_number):
         my_articles = self.get_articles_world()
         my_news = ""
-        display = self.get_total_results()
+        display = headline_number
         for i in range(display):
             my_news = my_news + str(i + 1) + ". " + my_articles[i] + "\n"
         return my_news
-
