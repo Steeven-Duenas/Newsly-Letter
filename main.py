@@ -110,6 +110,18 @@ elif options == "Top Headlines":
         'Please select the category of news: ',
         ('', 'Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'))
     st.write("You have selected: " + choice)
+    news = request_topheadlines_news_api(choice)
+    top_headlines_2 = topheadlines(news)
+    total_number_of_articles = top_headlines_2.get_total_results()
+    bool_choose = True
+    headline_number = 1
+    if total_number_of_articles >= 20:
+        headline_number = 20
+    else:
+        headline_number = top_headlines_2.get_total_results()
+    headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
+    headlines = topheadlines(news).show_article(headline_number)
+    st.write(headlines)
 elif options == "Search by Source":
     st.write("You have selected Search by Source")
 else:
