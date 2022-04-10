@@ -63,8 +63,17 @@ countries_of_the_world = {'Select a country': 'none',
 
 def request_country_news_api(country_select):
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
-    url = "https://newsapi.org/v2/top-headlines?country={0}&category=business&apiKey={1}".format(country_select,
-                                                                                                 api_key)
+    url = "https://newsapi.org/v2/top-headlines?country={0}&apiKey={1}".format(country_select, api_key)
+
+    jsonFile = requests.get(url).json()
+
+    return jsonFile
+
+
+def request_topheadlines_news_api(topic_name):
+    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
+    url = "https://newsapi.org/v2/top-headlines?country=us&category={0}&apiKey={1}".format(topic_name,
+                                                                                           api_key)
     jsonFile = requests.get(url).json()
 
     return jsonFile
@@ -72,7 +81,7 @@ def request_country_news_api(country_select):
 
 options = st.sidebar.radio(
     "Select News",
-    ('None','World News', 'Top Headlines', 'Search by Source'))
+    ('None', 'World News', 'Top Headlines', 'Search by Source'))
 
 if options == "World News":
     country = st.selectbox(
@@ -97,7 +106,10 @@ if options == "World News":
         st.write("You have not selected a country")
 
 elif options == "Top Headlines":
-    st.write("You have selected headlines")
+    choice = st.selectbox(
+        'Please select the category of news: ',
+        ('', 'Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'))
+    st.write("You have selected: " + choice)
 elif options == "Search by Source":
     st.write("You have selected Search by Source")
 else:
