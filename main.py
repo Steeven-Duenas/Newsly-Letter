@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 
+from sources import sources
 from topheadlines import topheadlines
 
 countries_of_the_world = {'Select a country': 'none',
@@ -79,6 +80,22 @@ def request_topheadlines_news_api(topic_name):
     return jsonFile
 
 
+def request_sources_news_api():
+    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
+    url = "https://newsapi.org/v2/top-headlines/sources?apiKey={0}".format(api_key)
+    jsonFile = requests.get(url).json()
+    return jsonFile
+
+
+def get_sources(news):
+    source_news = news
+    if source_news["status"] == "ok":
+        source_list = []
+        for sources in source_list["sources"]:
+            source_list.append(source_list["id"])
+    return source_list
+
+
 options = st.sidebar.radio(
     "Select News",
     ('None', 'World News', 'Top Headlines', 'Search by Source'))
@@ -104,25 +121,30 @@ if options == "World News":
         st.write(headlines)
     else:
         st.write("You have not selected a country")
-
 elif options == "Top Headlines":
     choice = st.selectbox(
         'Please select the category of news: ',
         ('', 'Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'))
-    st.write("You have selected: " + choice)
-    news = request_topheadlines_news_api(choice)
-    top_headlines_2 = topheadlines(news)
-    total_number_of_articles = top_headlines_2.get_total_results()
-    bool_choose = True
-    headline_number = 1
-    if total_number_of_articles >= 20:
-        headline_number = 20
+    if choice == '':
+        st.warning("Please select a subject")
     else:
-        headline_number = top_headlines_2.get_total_results()
-    headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
-    headlines = topheadlines(news).show_article(headline_number)
-    st.write(headlines)
+        st.write("You have selected: " + choice)
+        news = request_topheadlines_news_api(choice)
+        top_headlines_2 = topheadlines(news)
+        total_number_of_articles = top_headlines_2.get_total_results()
+        bool_choose = True
+        headline_number = 1
+        if total_number_of_articles >= 20:
+            headline_number = 20
+        else:
+            headline_number = top_headlines_2.get_total_results()
+        headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
+        headlines = topheadlines(news).show_article(headline_number)
+        st.write(headlines)
 elif options == "Search by Source":
-    st.write("You have selected Search by Source")
+    st.write("You have selected sources")
+    jsonFile = request_sources_news_api()
+    my_source = get_sources(jsonFile)
+    st.write(my_source)
 else:
     st.warning("Please Choose a Category")
