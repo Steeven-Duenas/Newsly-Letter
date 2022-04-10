@@ -72,13 +72,13 @@ def request_country_news_api(country_select):
 
 options = st.sidebar.radio(
     "Select News",
-    ('World News', 'Top Headlines', 'Search by Source'))
+    ('None','World News', 'Top Headlines', 'Search by Source'))
 
 if options == "World News":
     country = st.selectbox(
         'Select the country which you want news', options=countries_of_the_world)
 
-    if country:
+    if country != "Select a country":
         st.write("You have selected: " + country)
         country_code = countries_of_the_world[country]
         news = request_country_news_api(country_code)
@@ -90,13 +90,15 @@ if options == "World News":
             headline_number = 20
         else:
             headline_number = top_headlines_1.get_total_results()
-        mark = st.sidebar.button("Are you finish choosing?", key=1)
         headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
-        st.write(headline_number)
         headlines = topheadlines(news).show_article(headline_number)
         st.write(headlines)
+    else:
+        st.write("You have not selected a country")
 
 elif options == "Top Headlines":
     st.write("You have selected headlines")
+elif options == "Search by Source":
+    st.write("You have selected Search by Source")
 else:
-    st.write("You have selected Searching by Source")
+    st.warning("Please Choose a Category")
