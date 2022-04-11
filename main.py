@@ -82,7 +82,6 @@ def request_topheadlines_news_api(topic_name):
 
 def request_sources_news_api():
     api_key = 'f9e5f0c7d52342c1a1aa5129684953c3'
-
     url = "https://newsapi.org/v2/top-headlines/sources?apiKey={0}".format(api_key)
     news_ID_List = []
     news_Name_List = ['Select a Source']
@@ -150,10 +149,6 @@ elif options == "Top Headlines":
         top_headlines_2 = topheadlines(news)
         total_number_of_articles = top_headlines_2.get_total_results()
         headline_number = 1
-        if total_number_of_articles >= 20:
-            headline_number = 20
-        else:
-            headline_number = top_headlines_2.get_total_results()
         headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
         headlines = topheadlines(news).show_article(headline_number)
         st.write(headlines)
@@ -181,8 +176,8 @@ elif options == "Search by Keyword":
         key_word_search_1 = everything(jsonFile)
         number_of_Articles = key_word_search_1.get_total_results()
         st.write(number_of_Articles)
-        string_of_keyword_articles = key_word_search_1.get_articles_everything()
-        st.write(string_of_keyword_articles)
+        #string_of_keyword_articles = key_word_search_1.get_articles_everything()
+        #st.write(string_of_keyword_articles)
     else:
         st.warning("Please press the search button")
 else:
