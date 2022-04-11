@@ -3,7 +3,7 @@ class sources:
     def __init__(self, newsJson):
         self.newsJson = newsJson
 
-    def get_total_results(self):
+    def get_total_results(self,name):
         total = self.newsJson["totalResults"]
         return total
 
