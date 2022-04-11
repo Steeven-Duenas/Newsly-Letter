@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import requests
+from newsapi import NewsApiClient
 
 from sources import sources
 from topheadlines import topheadlines
@@ -87,15 +88,6 @@ def request_sources_news_api():
     return jsonFile
 
 
-def get_sources(news):
-    source_news = news
-    if source_news["status"] == "ok":
-        source_list = []
-        for sources in source_list["sources"]:
-            source_list.append(source_list["id"])
-    return source_list
-
-
 options = st.sidebar.radio(
     "Select News",
     ('None', 'World News', 'Top Headlines', 'Search by Source'))
@@ -142,9 +134,11 @@ elif options == "Top Headlines":
         headlines = topheadlines(news).show_article(headline_number)
         st.write(headlines)
 elif options == "Search by Source":
+    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
+    newsapi = NewsApiClient()
     st.write("You have selected sources")
-    jsonFile = request_sources_news_api()
-    my_source = get_sources(jsonFile)
-    st.write(my_source)
+    sources = newsapi.get_sources()
+    st.write(sources)
+
 else:
     st.warning("Please Choose a Category")
