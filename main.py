@@ -1,7 +1,8 @@
+import json
+
 import streamlit as st
 import pandas as pd
 import requests
-from newsapi import NewsApiClient
 
 from sources import sources
 from topheadlines import topheadlines
@@ -62,6 +63,10 @@ countries_of_the_world = {'Select a country': 'none',
                           'United States': 'us',
                           'Venezuela, Bolivarian Republic of': 've'}
 
+sources_in_api = {'Select a Source': 'none'
+
+                  }
+
 
 def request_country_news_api(country_select):
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
@@ -82,10 +87,21 @@ def request_topheadlines_news_api(topic_name):
 
 
 def request_sources_news_api():
-    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
+    api_key = 'f9e5f0c7d52342c1a1aa5129684953c3'
     url = "https://newsapi.org/v2/top-headlines/sources?apiKey={0}".format(api_key)
-    jsonFile = requests.get(url).json()
-    return jsonFile
+    news_ID_List = []
+    news_Name_List = []
+    news_Name_List.append('Select a Source')
+    news_ID_List.append('none')
+    # Send Request
+    json_File = requests.get(url).json()
+    for _version in json_File["sources"]:
+        news_Name_List.append(_version["name"])
+        news_ID_List.append(_version["id"])
+
+    dictionary_Of_Sources = dict(zip(news_Name_List, news_ID_List))
+
+    return dictionary_Of_Sources
 
 
 options = st.sidebar.radio(
@@ -135,10 +151,9 @@ elif options == "Top Headlines":
         st.write(headlines)
 elif options == "Search by Source":
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
-    newsapi = NewsApiClient()
+    source_files = request_sources_news_api()
     st.write("You have selected sources")
-    sources = newsapi.get_sources()
-    st.write(sources)
+    st.write(source_files)
 
 else:
     st.warning("Please Choose a Category")
