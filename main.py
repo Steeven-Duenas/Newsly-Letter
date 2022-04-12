@@ -5,7 +5,7 @@ from everything import everything
 from sources import sources
 from topheadlines import topheadlines
 
-countries_of_the_world = {'Select a country': 'none',
+countries_of_the_world = {'': '',
                           'Argentina': 'ar',
                           'Australia': 'au',
                           'Austria': 'at',
@@ -65,9 +65,7 @@ countries_of_the_world = {'Select a country': 'none',
 def request_country_news_api(country_select):
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     url = "https://newsapi.org/v2/top-headlines?country={0}&apiKey={1}".format(country_select, api_key)
-
     jsonFile = requests.get(url).json()
-
     return jsonFile
 
 
@@ -88,9 +86,9 @@ def request_sources_news_api():
     news_ID_List.append('none')
     # Send Request
     json_File = requests.get(url).json()
-    for _version in json_File["sources"]:
-        news_Name_List.append(_version["name"])
-        news_ID_List.append(_version["id"])
+    for x in json_File["sources"]:
+        news_Name_List.append(x["name"])
+        news_ID_List.append(x["id"])
 
     dictionary_Of_Sources = dict(zip(news_Name_List, news_ID_List))
 
@@ -115,13 +113,13 @@ def request_keyword_news_api(keyword):
 
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source'))
+    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source','Testing'))
 
 if options == "World News":
     country = st.selectbox(
         'Select the country which you want news', options=countries_of_the_world)
 
-    if country != "Select a country":
+    if country != '':
         st.title(country + " *News*!")
         country_code = countries_of_the_world[country]
         news = request_country_news_api(country_code)
@@ -136,7 +134,7 @@ if options == "World News":
         headlines = topheadlines(news).show_article(headline_number)
         st.write(headlines)
     else:
-        st.write("You have not selected a country")
+        st.warning("You have not selected a country")
 elif options == "Top Headlines":
     choice = st.selectbox(
         'Please select the category of news: ',
@@ -164,21 +162,24 @@ elif options == "Search by Source":
         news = request_country_news_api(source_id)
         source_headlines = request_headlines_source_news_api(source_id)
         source_object_1 = sources(source_headlines)
-        number_of_Articles = source_object_1.get_total_results(source_headlines)
+        number_of_Articles = source_object_1.get_total_results()
         string_of_articles = source_object_1.show_article_of_sources(number_of_Articles)
         st.write(string_of_articles)
-
 elif options == "Search by Keyword":
     keyword = st.text_input('Enter keyword', 'bitcoin')
     if st.button('Search'):
         st.title(keyword.capitalize())
         jsonFile = request_keyword_news_api(keyword)
-        key_word_search_1 = everything(jsonFile)
+        key_word_search_1 = sources(jsonFile)
         number_of_Articles = key_word_search_1.get_total_results()
         st.write(number_of_Articles)
-        #string_of_keyword_articles = key_word_search_1.get_articles_everything()
-        #st.write(string_of_keyword_articles)
+        string_of_keyword_articles = key_word_search_1.show_article_of_sources(number_of_Articles)
+        st.write(string_of_keyword_articles)
     else:
-        st.warning("Please press the search button")
+        st.warning("Please press the search button to search")
+elif options == "Testing":
+    for x, y in countries_of_the_world.items():
+        expander = st.expander(x)
+        expander.write(y)
 else:
     st.warning("Please Choose a Category")
