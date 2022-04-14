@@ -105,11 +105,14 @@ def request_keyword_news_api(key_word):
     return json_file
 
 
+# Radio Button
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source', 'Cryptocurrency','Testing'))
+    ('Search by Keyword', 'World News', 'Top Headlines by Categories', 'Top Headlines by Source', 'Cryptocurrency',
+     'Testing'))
 
 if options == "World News":
+    # Select box
     country = st.selectbox(
         'Select the country which you want news', options=countries_of_the_world)
 
@@ -127,7 +130,7 @@ if options == "World News":
             counter = counter + 1
     else:
         st.warning("You have not selected a country")
-elif options == "Top Headlines":
+elif options == "Top Headlines by Categories":
     choice = st.selectbox(
         'Please select the category of news: ',
         ('', 'Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'))
@@ -145,16 +148,18 @@ elif options == "Top Headlines":
             counter = counter + 1
     else:
         st.warning("Please select a subject")
-elif options == "Search by Source":
+elif options == "Top Headlines by Source":
     source_files = request_sources_news_api()
+    # Select box
     source_name = st.selectbox('Select the Source of News', options=source_files)
     if source_name != 'Select a Source':
         source_id = source_files[source_name]
         st.title(source_name)
         source_headlines = request_headlines_source_news_api(source_id)
         source_object_1 = topheadlines(source_headlines)
-        counter = 1
         data = source_object_1.dictionary_of_title_and_description_and_links()
+        counter = 1
+
         for dictionary in data:
             expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
             expander.write('Link: ' + str(dictionary['url']))
@@ -162,30 +167,29 @@ elif options == "Search by Source":
     else:
         st.warning("Please select a source")
 elif options == "Search by Keyword":
-    keyword = st.text_input('Enter keyword', 'bitcoin')
-    if st.button('Search'):
-        st.title(keyword.capitalize())
-        jsonFile = request_keyword_news_api(keyword)
-        key_word_search_1 = topheadlines(jsonFile)
-        counter = 1
-        data = key_word_search_1.dictionary_of_title_and_description_and_links()
-        for dictionary in data:
-            expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
-            expander.write('Description: ' + str(dictionary['summary']))
-            expander.write('Link: ' + str(dictionary['url']))
-            counter = counter + 1
-    else:
-        st.warning("Please press the search button to search")
+    with st.form("my_form", clear_on_submit=True):
+        # Text Input
+        keyword = st.text_input('Search for news', '')
+        # Submit Button
+        submitted = st.form_submit_button("Submit")
+        if keyword != '':
+            st.title(keyword.capitalize())
+            jsonFile = request_keyword_news_api(keyword)
+            key_word_search_1 = topheadlines(jsonFile)
+            counter = 1
+            data = key_word_search_1.dictionary_of_title_and_description_and_links()
+            for dictionary in data:
+                expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
+                expander.write('Description: ' + str(dictionary['summary']))
+                expander.write('Link: ' + str(dictionary['url']))
+                counter = counter + 1
+        else:
+            st.warning("Please do not leave the box blank")
 elif options == "Cryptocurrency":
     st.write("Cryptocurrency")
 elif options == "Testing":
     st.write("Testing")
-    options = st.multiselect(
-        'Select the news',
-        ['Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'],
-        ['Business'])
-    for x in options:
-        st.write(x)
+
     st.write(len(options))
 else:
     st.warning("Please Choose a Category")
