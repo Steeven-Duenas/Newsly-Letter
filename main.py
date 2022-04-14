@@ -137,20 +137,20 @@ elif options == "Top Headlines":
     choice = st.selectbox(
         'Please select the category of news: ',
         ('', 'Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'))
-    if choice == '':
-        st.warning("Please select a subject")
-    else:
+    if choice != '':
         st.title(choice)
         news = request_topheadlines_news_api(choice)
         top_headlines_2 = topheadlines(news)
-        total_number_of_articles = top_headlines_2.get_total_results()
-        top_headline_and_summary = top_headlines_2.dictionary_of_title_and_description()
+        top_headline_and_summary = top_headlines_2.dictionary_of_title_and_description_and_links()
         counter = 1
-        for x, y in top_headline_and_summary.items():
-            expander = st.expander(str(counter) + ". " + x)
-            expander.write('Description: ' + str(y))
-            expander.write('Link: ')
+        data = top_headlines_2.dictionary_of_title_and_description_and_links()
+        for dictionary in data:
+            expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
+            expander.write('Description: ' + str(dictionary['summary']))
+            expander.write('Link: ' + str(dictionary['url']))
             counter = counter + 1
+    else:
+        st.warning("Please select a subject")
 elif options == "Search by Source":
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     source_files = request_sources_news_api()
