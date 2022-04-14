@@ -124,15 +124,12 @@ if options == "World News":
         country_code = countries_of_the_world[country]
         news = request_country_news_api(country_code)
         top_headlines_1 = topheadlines(news)
-        total_number_of_articles = top_headlines_1.get_total_results()
-        headline_number = 1
-        if total_number_of_articles >= 20:
-            headline_number = 20
-        else:
-            headline_number = top_headlines_1.get_total_results()
-        headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
-        headlines = topheadlines(news).show_article(headline_number)
-        st.write(headlines)
+        world_headline_and_summary = top_headlines_1.dictionary_of_title_and_description()
+        counter = 1
+        for x, y in world_headline_and_summary.items():
+            expander = st.expander(str(counter) + ". " + x)
+            expander.write('Description: ' + str(y))
+            counter = counter + 1
     else:
         st.warning("You have not selected a country")
 elif options == "Top Headlines":
@@ -172,14 +169,13 @@ elif options == "Search by Keyword":
         jsonFile = request_keyword_news_api(keyword)
         key_word_search_1 = sources(jsonFile)
         number_of_Articles = key_word_search_1.get_total_results()
-        st.write(number_of_Articles)
         string_of_keyword_articles = key_word_search_1.show_article_of_sources(number_of_Articles)
         st.write(string_of_keyword_articles)
     else:
         st.warning("Please press the search button to search")
 elif options == "Testing":
-    for x, y in countries_of_the_world.items():
-        expander = st.expander(x)
-        expander.write(y)
+    st.write("TESTING")
+
 else:
     st.warning("Please Choose a Category")
+
