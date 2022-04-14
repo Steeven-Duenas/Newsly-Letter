@@ -1,8 +1,6 @@
 import requests
 import streamlit as st
 
-from everything import everything
-from sources import sources
 from topheadlines import topheadlines
 
 countries_of_the_world = {'': '',
@@ -60,26 +58,24 @@ countries_of_the_world = {'': '',
                           'United Kingdom': 'gb',
                           'United States': 'us',
                           'Venezuela, Bolivarian Republic of': 've'}
+api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
 
 
 def request_country_news_api(country_select):
-    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     url = "https://newsapi.org/v2/top-headlines?country={0}&apiKey={1}".format(country_select, api_key)
-    jsonFile = requests.get(url).json()
-    return jsonFile
+    json_File = requests.get(url).json()
+    return json_File
 
 
 def request_topheadlines_news_api(topic_name):
-    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     url = "https://newsapi.org/v2/top-headlines?country=us&category={0}&apiKey={1}".format(topic_name,
                                                                                            api_key)
-    jsonFile = requests.get(url).json()
+    json_File = requests.get(url).json()
 
-    return jsonFile
+    return json_File
 
 
 def request_sources_news_api():
-    api_key = 'f9e5f0c7d52342c1a1aa5129684953c3'
     url = "https://newsapi.org/v2/top-headlines/sources?apiKey={0}".format(api_key)
     news_ID_List = []
     news_Name_List = ['Select a Source']
@@ -95,25 +91,23 @@ def request_sources_news_api():
     return dictionary_Of_Sources
 
 
-def request_headlines_source_news_api(source_id):
-    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
-    url = "https://newsapi.org/v2/top-headlines?sources={0}&apiKey={1}".format(source_id, api_key)
-    jsonFile = requests.get(url).json()
+def request_headlines_source_news_api(source_id_api):
+    url = "https://newsapi.org/v2/top-headlines?sources={0}&apiKey={1}".format(source_id_api, api_key)
+    json_File = requests.get(url).json()
 
-    return jsonFile
+    return json_File
 
 
-def request_keyword_news_api(keyword):
-    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
-    url = "https://newsapi.org/v2/everything?q={0}&apiKey={1}".format(keyword, api_key)
-    jsonFile = requests.get(url).json()
+def request_keyword_news_api(key_word):
+    url = "https://newsapi.org/v2/everything?q={0}&apiKey={1}".format(key_word, api_key)
+    json_file = requests.get(url).json()
 
-    return jsonFile
+    return json_file
 
 
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source', 'Testing'))
+    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source', 'Cryptocurrency'))
 
 if options == "World News":
     country = st.selectbox(
@@ -152,33 +146,38 @@ elif options == "Top Headlines":
     else:
         st.warning("Please select a subject")
 elif options == "Search by Source":
-    api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     source_files = request_sources_news_api()
     source_name = st.selectbox('Select the Source of News', options=source_files)
-    if source_name == 'Select a Source':
-        st.warning("Please select a source")
-    else:
+    if source_name != 'Select a Source':
         source_id = source_files[source_name]
         st.title(source_name)
-        news = request_country_news_api(source_id)
         source_headlines = request_headlines_source_news_api(source_id)
-        source_object_1 = sources(source_headlines)
-        number_of_Articles = source_object_1.get_total_results()
-        string_of_articles = source_object_1.show_article_of_sources(number_of_Articles)
-        st.write(string_of_articles)
+        source_object_1 = topheadlines(source_headlines)
+        counter = 1
+        data = source_object_1.dictionary_of_title_and_description_and_links()
+        for dictionary in data:
+            expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
+            expander.write('Link: ' + str(dictionary['url']))
+            counter = counter + 1
+    else:
+        st.warning("Please select a source")
 elif options == "Search by Keyword":
     keyword = st.text_input('Enter keyword', 'bitcoin')
     if st.button('Search'):
         st.title(keyword.capitalize())
         jsonFile = request_keyword_news_api(keyword)
-        key_word_search_1 = sources(jsonFile)
-        number_of_Articles = key_word_search_1.get_total_results()
-        string_of_keyword_articles = key_word_search_1.show_article_of_sources(number_of_Articles)
-        st.write(string_of_keyword_articles)
+        key_word_search_1 = topheadlines(jsonFile)
+        counter = 1
+        data = key_word_search_1.dictionary_of_title_and_description_and_links()
+        for dictionary in data:
+            expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
+            expander.write('Description: ' + str(dictionary['summary']))
+            expander.write('Link: ' + str(dictionary['url']))
+            counter = counter + 1
     else:
         st.warning("Please press the search button to search")
-elif options == "Testing":
-    st.write("TESTING")
+elif options == "Cryptocurrency":
+    st.write("Cryptocurrency")
 
 else:
     st.warning("Please Choose a Category")
