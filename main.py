@@ -113,7 +113,7 @@ def request_keyword_news_api(keyword):
 
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source','Testing'))
+    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source', 'Testing'))
 
 if options == "World News":
     country = st.selectbox(
@@ -124,11 +124,12 @@ if options == "World News":
         country_code = countries_of_the_world[country]
         news = request_country_news_api(country_code)
         top_headlines_1 = topheadlines(news)
-        world_headline_and_summary = top_headlines_1.dictionary_of_title_and_description()
         counter = 1
-        for x, y in world_headline_and_summary.items():
-            expander = st.expander(str(counter) + ". " + x)
-            expander.write('Description: ' + str(y))
+        data = top_headlines_1.dictionary_of_title_and_description_and_links()
+        for dictionary in data:
+            expander = st.expander(str(counter) + ". " + str(dictionary['articles']))
+            expander.write('Description: ' + str(dictionary['summary']))
+            expander.write('Link: ' + str(dictionary['url']))
             counter = counter + 1
     else:
         st.warning("You have not selected a country")
@@ -143,10 +144,13 @@ elif options == "Top Headlines":
         news = request_topheadlines_news_api(choice)
         top_headlines_2 = topheadlines(news)
         total_number_of_articles = top_headlines_2.get_total_results()
-        headline_number = 1
-        headline_number = st.sidebar.slider("How many articles?", 1, headline_number)
-        headlines = topheadlines(news).show_article(headline_number)
-        st.write(headlines)
+        top_headline_and_summary = top_headlines_2.dictionary_of_title_and_description()
+        counter = 1
+        for x, y in top_headline_and_summary.items():
+            expander = st.expander(str(counter) + ". " + x)
+            expander.write('Description: ' + str(y))
+            expander.write('Link: ')
+            counter = counter + 1
 elif options == "Search by Source":
     api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
     source_files = request_sources_news_api()
@@ -178,4 +182,3 @@ elif options == "Testing":
 
 else:
     st.warning("Please Choose a Category")
-
