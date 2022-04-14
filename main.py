@@ -107,7 +107,7 @@ def request_keyword_news_api(key_word):
 
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source', 'Cryptocurrency'))
+    ('Search by Keyword', 'World News', 'Top Headlines', 'Search by Source', 'Cryptocurrency','Testing'))
 
 if options == "World News":
     country = st.selectbox(
@@ -178,6 +178,14 @@ elif options == "Search by Keyword":
         st.warning("Please press the search button to search")
 elif options == "Cryptocurrency":
     st.write("Cryptocurrency")
-
+elif options == "Testing":
+    st.write("Testing")
+    options = st.multiselect(
+        'Select the news',
+        ['Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'],
+        ['Business'])
+    for x in options:
+        st.write(x)
+    st.write(len(options))
 else:
     st.warning("Please Choose a Category")
