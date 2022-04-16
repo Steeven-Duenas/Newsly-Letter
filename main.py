@@ -1,8 +1,7 @@
 import requests
 import pandas as pd
 import streamlit as st
-import numpy as np
-
+import time
 
 from topheadlines import topheadlines
 
@@ -61,7 +60,26 @@ countries_of_the_world = {'': '',
                           'United Kingdom': 'gb',
                           'United States': 'us',
                           'Venezuela, Bolivarian Republic of': 've'}
+
 api_key = "f9e5f0c7d52342c1a1aa5129684953c3"
+
+
+def map_creator():
+    from streamlit_folium import folium_static
+    import folium
+    df = pd.read_csv("world_country_and_usa_states_latitude_and_longitude_values.csv")
+    # center on the station
+    m = folium.Map(location=[13.13, 16.10], zoom_start=1.9)
+    # add marker for the station
+    city = df.loc[0]
+    for _, country in df.iterrows():
+        folium.Marker(
+            location=[country['latitude'], country['longitude']], popup="Country Code: " + country['country_code'],
+            tooltip=country['country']
+        ).add_to(m)
+
+    # call to render Folium map in Streamlit
+    folium_static(m)
 
 
 def request_country_news_api(country_select):
@@ -111,7 +129,7 @@ def request_keyword_news_api(key_word):
 # Radio Button
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines by Categories', 'Top Headlines by Source', 'Statistics',
+    ('Search by Keyword', 'World News', 'Top Headlines by Categories', 'Top Headlines by Source', 'Country Information',
      'Testing'))
 
 if options == "World News":
@@ -188,11 +206,38 @@ elif options == "Search by Keyword":
                 counter = counter + 1
         else:
             st.warning("Please do not leave the box blank")
-elif options == "Statistics":
-    st.write("Statistics")
-
-
 elif options == "Testing":
     st.write("Testing")
+elif options == "Country Information":
+    dataframe = pd.read_csv("world_country_and_usa_states_latitude_and_longitude_values.csv")
+    with st.form("Map_and_table"):
+        st.write("Map & Table")
+        map_box = st.checkbox("Show World Map",)
+        coordinates_box = st.checkbox("Show Country Coordinates")
+        # Every form must have a submit button.
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            # Displays Table
+            if coordinates_box:
+                my_bar = st.progress(0)
+                for percent_complete in range(100):
+                    time.sleep(0.01)
+                    my_bar.progress(percent_complete + 1)
+                if percent_complete == 99:
+                    st.success("The table has loaded successfully")
+                    st.write("Table of countries with supported news stations")
+                    st.table(dataframe)
+            # Displays Map
+            if map_box:
+                my_bar = st.progress(0)
+                for percent_complete in range(100):
+                    time.sleep(0.01)
+                    my_bar.progress(percent_complete + 1)
+                if percent_complete == 99:
+                    st.success("The map has loaded successfully")
+                    st.write("Map Countries with supported news stations")
+                    map_creator()
+
+        # Interactive Table
 else:
     st.warning("Please Choose a Category")
