@@ -1,5 +1,8 @@
 import requests
+import pandas as pd
 import streamlit as st
+import numpy as np
+
 
 from topheadlines import topheadlines
 
@@ -108,7 +111,7 @@ def request_keyword_news_api(key_word):
 # Radio Button
 options = st.sidebar.radio(
     "Select News",
-    ('Search by Keyword', 'World News', 'Top Headlines by Categories', 'Top Headlines by Source', 'Cryptocurrency',
+    ('Search by Keyword', 'World News', 'Top Headlines by Categories', 'Top Headlines by Source', 'Statistics',
      'Testing'))
 
 if options == "World News":
@@ -185,11 +188,11 @@ elif options == "Search by Keyword":
                 counter = counter + 1
         else:
             st.warning("Please do not leave the box blank")
-elif options == "Cryptocurrency":
-    st.write("Cryptocurrency")
+elif options == "Statistics":
+    st.write("Statistics")
+
+
 elif options == "Testing":
     st.write("Testing")
-
-    st.write(len(options))
 else:
     st.warning("Please Choose a Category")
