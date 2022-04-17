@@ -303,21 +303,21 @@ elif options == "Welcome":
     st.write("You will find different ways to search and look up news in the sidebar")
     st.write("Give us feedback by email: sduen011@fiu.edu")
 elif options == "Global Statistics":
-    st.write('Stats')
-    line_chart = st.checkbox('Press to show area chart')
     bar_chart = st.checkbox('Press to show bar chart')
+    line_chart = st.checkbox('Press to show area chart')
     population_data_frame = pd.read_csv("population_by_country_2020.csv")
     thing_one = get_array_of_population()
     thing_two = get_array_of_name()
     data = [{'name': nam, 'population': pop} for nam, pop, in zip(thing_two, thing_one)]
     chart_data = pd.DataFrame(
-        [(data[0]["population"][0], 0), (data[1]["population"][0], 1), (data[2]["population"][0], 2),(data[3]["population"][0], 3)],
+        [(data[0]["population"][0], 0), (data[1]["population"][0], 1), (data[2]["population"][0], 2),
+         (data[3]["population"][0], 3)],
         columns=["World", ""])
     if bar_chart:
-        #Bar Chart
+        # Bar Chart
         st.bar_chart(chart_data)
     if line_chart:
-        #Line Chart
+        # Line Chart
         st.line_chart(chart_data)
 else:
     st.warning("Please Choose a Category")
