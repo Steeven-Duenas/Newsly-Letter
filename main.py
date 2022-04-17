@@ -1,10 +1,9 @@
-import requests
-import pandas as pd
-import streamlit as st
 import time
+
 import folium
-import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
+import requests
+import streamlit as st
 from streamlit_folium import folium_static
 
 from topheadlines import topheadlines
