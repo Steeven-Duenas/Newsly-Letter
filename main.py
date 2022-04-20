@@ -297,13 +297,13 @@ elif options == "Top Headlines by Categories":
         if x == 'Technology':
             get_source_news(x, articles)
 elif options == "Welcome":
-    st.title("Welcome to Newsly")
+    st.title("Welcome to Newsly Letter")
     st.subheader("This is an app that uses NEWSAPI to deliver you news")
     st.write("You will find different ways to search and look up news in the sidebar")
     st.write("Give us feedback by email: sduen011@fiu.edu")
 elif options == "Global Statistics":
-    bar_chart = st.checkbox('Press to show bar chart')
-    line_chart = st.checkbox('Press to show area chart')
+    bar_chart = st.checkbox('Press to show top 4 countries population bar chart')
+    line_chart = st.checkbox('Press to show top 4 countries population area chart')
     population_data_frame = pd.read_csv("population_by_country_2020.csv")
     thing_one = get_array_of_population()
     thing_two = get_array_of_name()
