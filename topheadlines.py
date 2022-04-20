@@ -59,7 +59,3 @@ class topheadlines:
         data = [{'articles': art, 'summary': sun, 'url': url} for art, sun, url in
                 zip(articles, summary, url)]
         return data
-
-    def get_artcile_chart_data(self):
-        dictionary = {}
-        return dictionary
